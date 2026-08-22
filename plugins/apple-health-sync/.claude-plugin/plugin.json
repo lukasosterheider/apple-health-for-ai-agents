@@ -1,0 +1,15 @@
+{
+  "name": "apple-health-sync",
+  "displayName": "Apple Health Sync",
+  "version": "1.1.0",
+  "description": "Securely sync end-to-end encrypted Apple Health data into Claude Code without requiring Python on the user's computer.",
+  "author": {
+    "name": "Lukas Osterheider",
+    "email": "support@gethealthsync.app",
+    "url": "https://gethealthsync.app/"
+  },
+  "homepage": "https://gethealthsync.app/",
+  "repository": "https://github.com/lukasosterheider/healthclaw",
+  "keywords": ["apple-health", "health", "ios", "encrypted", "sync"],
+  "skills": "./skills/"
+}

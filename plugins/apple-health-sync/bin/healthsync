@@ -1,0 +1,305 @@
+#!/bin/sh
+set -eu
+
+launcher_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+plugin_root=$(CDPATH= cd -- "$launcher_dir/.." && pwd)
+system_name=$(uname -s)
+machine_name=$(uname -m)
+
+case "$system_name:$machine_name" in
+  Darwin:arm64) platform_tag="darwin-arm64" ;;
+  Darwin:x86_64) platform_tag="darwin-x64" ;;
+  Linux:aarch64|Linux:arm64) platform_tag="linux-arm64" ;;
+  Linux:x86_64|Linux:amd64) platform_tag="linux-x64" ;;
+  *)
+    printf 'Apple Health Sync does not support %s/%s.\n' "$system_name" "$machine_name" >&2
+    exit 78
+    ;;
+esac
+
+runtime_action=""
+if [ "$#" -ge 2 ] && [ "$1" = "runtime" ]; then
+  runtime_action=$2
+  shift 2
+  if [ "$#" -ne 0 ]; then
+    printf 'Usage: healthsync runtime status|verify|clean\n' >&2
+    exit 64
+  fi
+  case "$runtime_action" in
+    status|verify|clean) ;;
+    *)
+      printf 'Usage: healthsync runtime status|verify|clean\n' >&2
+      exit 64
+      ;;
+  esac
+fi
+
+bundled_runtime="$plugin_root/runtime/$platform_tag/healthsync"
+if [ -x "$bundled_runtime" ]; then
+  case "$runtime_action" in
+    status)
+      printf 'Apple Health Sync runtime: bundled (%s)\n' "$platform_tag"
+      exit 0
+      ;;
+    verify)
+      "$bundled_runtime" --version
+      "$bundled_runtime" self-test >/dev/null
+      printf 'Apple Health Sync bundled runtime verified.\n'
+      exit 0
+      ;;
+    clean)
+      printf 'The bundled offline runtime is part of the plugin and was not removed.\n'
+      exit 0
+      ;;
+    "") exec "$bundled_runtime" "$@" ;;
+  esac
+fi
+
+manifest_path=${HEALTHSYNC_RUNTIME_MANIFEST:-"$plugin_root/runtime-downloads/manifest.tsv"}
+if [ ! -f "$manifest_path" ]; then
+  printf 'Apple Health Sync runtime manifest is missing: %s\n' "$manifest_path" >&2
+  exit 78
+fi
+
+runtime_version=""
+runtime_url=""
+runtime_sha256=""
+executable_sha256=""
+archive_kind=""
+executable_name=""
+while IFS='|' read -r manifest_platform manifest_version manifest_url manifest_sha manifest_executable_sha manifest_archive manifest_executable; do
+  if [ "$manifest_platform" = "$platform_tag" ]; then
+    runtime_version=$manifest_version
+    runtime_url=$manifest_url
+    runtime_sha256=$manifest_sha
+    executable_sha256=$manifest_executable_sha
+    archive_kind=$manifest_archive
+    executable_name=$manifest_executable
+    break
+  fi
+done < "$manifest_path"
+
+if [ -z "$runtime_version" ] || [ -z "$runtime_url" ] || [ -z "$runtime_sha256" ] || [ -z "$executable_sha256" ]; then
+  printf 'Apple Health Sync has no runtime entry for %s.\n' "$platform_tag" >&2
+  exit 78
+fi
+case "$runtime_version" in *[!A-Za-z0-9._-]*|'') printf 'Invalid runtime version.\n' >&2; exit 78 ;; esac
+case "$runtime_sha256" in *[!0-9a-f]*|'') printf 'Invalid runtime checksum.\n' >&2; exit 78 ;; esac
+case "$executable_sha256" in *[!0-9a-f]*|'') printf 'Invalid executable checksum.\n' >&2; exit 78 ;; esac
+if [ "${#runtime_sha256}" -ne 64 ] || [ "${#executable_sha256}" -ne 64 ]; then
+  printf 'Invalid runtime checksum length.\n' >&2
+  exit 78
+fi
+if [ "$archive_kind" != "tar.gz" ] || [ "$executable_name" != "healthsync" ]; then
+  printf 'Invalid runtime package metadata for %s.\n' "$platform_tag" >&2
+  exit 78
+fi
+
+if [ -n "${HEALTHSYNC_RUNTIME_ROOT:-}" ]; then
+  cache_root=$HEALTHSYNC_RUNTIME_ROOT
+elif [ "$system_name" = "Darwin" ]; then
+  cache_root="$HOME/Library/Caches/healthsync/runtime"
+else
+  cache_root="${XDG_CACHE_HOME:-$HOME/.cache}/healthsync/runtime"
+fi
+version_root="$cache_root/$runtime_version"
+runtime_dir="$version_root/$platform_tag"
+runtime_path="$runtime_dir/$executable_name"
+verified_marker="$runtime_dir/.verified-sha256"
+lock_dir="$version_root/.$platform_tag.installing"
+
+calculate_sha256() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | sed 's/[[:space:]].*$//'
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$1" | sed 's/[[:space:]].*$//'
+  elif command -v openssl >/dev/null 2>&1; then
+    openssl dgst -sha256 "$1" | sed 's/^.*= //'
+  else
+    return 69
+  fi
+}
+
+is_verified_runtime() {
+  [ -x "$runtime_path" ] &&
+    [ -f "$verified_marker" ] &&
+    [ "$(sed -n '1p' "$verified_marker" 2>/dev/null || true)" = "$runtime_sha256" ] &&
+    [ "$(calculate_sha256 "$runtime_path" 2>/dev/null || true)" = "$executable_sha256" ]
+}
+
+verify_runtime_command() {
+  version_output=$($runtime_path --version 2>/dev/null || true)
+  [ "$version_output" = "healthsync $runtime_version" ] || return 1
+  "$runtime_path" self-test >/dev/null 2>&1
+}
+
+case "$runtime_action" in
+  status)
+    if is_verified_runtime; then
+      printf 'Apple Health Sync runtime %s is cached for %s at %s\n' "$runtime_version" "$platform_tag" "$runtime_path"
+    else
+      printf 'Apple Health Sync runtime %s is not cached for %s.\n' "$runtime_version" "$platform_tag"
+    fi
+    exit 0
+    ;;
+  verify)
+    if ! is_verified_runtime || ! verify_runtime_command; then
+      printf 'Apple Health Sync runtime %s is not installed or failed verification.\n' "$runtime_version" >&2
+      exit 1
+    fi
+    printf 'Apple Health Sync runtime %s verified for %s.\n' "$runtime_version" "$platform_tag"
+    exit 0
+    ;;
+  clean)
+    if [ -L "$runtime_dir" ]; then
+      printf 'Refusing to remove a symbolic-link runtime directory: %s\n' "$runtime_dir" >&2
+      exit 78
+    fi
+    if [ -d "$runtime_dir" ]; then
+      rm -rf -- "$runtime_dir"
+      printf 'Removed cached Apple Health Sync runtime %s for %s.\n' "$runtime_version" "$platform_tag"
+    else
+      printf 'No cached Apple Health Sync runtime exists for %s.\n' "$platform_tag"
+    fi
+    exit 0
+    ;;
+esac
+
+if is_verified_runtime && verify_runtime_command; then
+  exec "$runtime_path" "$@"
+fi
+
+umask 077
+mkdir -p "$version_root"
+if [ -L "$version_root" ] || [ ! -d "$version_root" ]; then
+  printf 'Unsafe Apple Health Sync cache directory: %s\n' "$version_root" >&2
+  exit 78
+fi
+chmod 700 "$version_root" 2>/dev/null || true
+
+lock_acquired=0
+attempt=0
+while [ "$attempt" -lt 120 ]; do
+  if mkdir "$lock_dir" 2>/dev/null; then
+    printf '%s\n' "$$" > "$lock_dir/pid"
+    lock_acquired=1
+    break
+  fi
+  if is_verified_runtime && verify_runtime_command; then
+    exec "$runtime_path" "$@"
+  fi
+  if [ -f "$lock_dir/pid" ] && [ ! -L "$lock_dir" ]; then
+    lock_pid=$(sed -n '1p' "$lock_dir/pid" 2>/dev/null || true)
+    case "$lock_pid" in
+      ''|*[!0-9]*) ;;
+      *)
+        if ! kill -0 "$lock_pid" 2>/dev/null; then
+          rm -rf -- "$lock_dir"
+          continue
+        fi
+        ;;
+    esac
+  fi
+  attempt=$((attempt + 1))
+  sleep 1
+done
+if [ "$lock_acquired" -ne 1 ]; then
+  printf 'Timed out waiting for another Apple Health Sync runtime installation.\n' >&2
+  exit 75
+fi
+
+temporary_dir=""
+cleanup() {
+  if [ -n "$temporary_dir" ] && [ -d "$temporary_dir" ]; then
+    rm -rf -- "$temporary_dir"
+  fi
+  rm -f -- "$lock_dir/pid" 2>/dev/null || true
+  rmdir "$lock_dir" 2>/dev/null || true
+}
+trap cleanup EXIT HUP INT TERM
+
+if is_verified_runtime && verify_runtime_command; then
+  cleanup
+  trap - EXIT HUP INT TERM
+  exec "$runtime_path" "$@"
+fi
+
+temporary_dir=$(mktemp -d "$version_root/.download.XXXXXX")
+archive_path="$temporary_dir/runtime.tar.gz"
+extract_dir="$temporary_dir/extracted"
+mkdir "$extract_dir"
+
+printf 'Preparing Apple Health Sync runtime %s for %s...\n' "$runtime_version" "$platform_tag" >&2
+printf 'Downloading the verified runtime package...\n' >&2
+case "$runtime_url" in
+  https://*)
+    if command -v curl >/dev/null 2>&1; then
+      curl --fail --location --show-error --progress-bar --proto '=https' --tlsv1.2 \
+        --connect-timeout 20 --retry 3 --output "$archive_path" "$runtime_url"
+    elif command -v wget >/dev/null 2>&1; then
+      wget --https-only --timeout=20 --tries=3 --output-document="$archive_path" "$runtime_url"
+    else
+      printf 'Apple Health Sync needs curl or wget for the one-time runtime download.\n' >&2
+      exit 69
+    fi
+    ;;
+  file://*)
+    if [ "${HEALTHSYNC_ALLOW_FILE_URL_FOR_TESTS:-}" != "1" ]; then
+      printf 'Non-HTTPS runtime URLs are not allowed.\n' >&2
+      exit 78
+    fi
+    cp -- "${runtime_url#file://}" "$archive_path"
+    ;;
+  *)
+    printf 'Non-HTTPS runtime URLs are not allowed.\n' >&2
+    exit 78
+    ;;
+esac
+
+actual_sha256=$(calculate_sha256 "$archive_path" 2>/dev/null || true)
+if [ -z "$actual_sha256" ]; then
+  printf 'No SHA-256 verification tool is available (sha256sum or shasum).\n' >&2
+  exit 69
+fi
+if [ "$actual_sha256" != "$runtime_sha256" ]; then
+  printf 'Apple Health Sync runtime checksum verification failed.\n' >&2
+  exit 65
+fi
+
+printf 'Verifying and installing the runtime...\n' >&2
+tar -xzf "$archive_path" -C "$extract_dir"
+staged_runtime="$extract_dir/$executable_name"
+if [ ! -f "$staged_runtime" ] || [ -L "$staged_runtime" ]; then
+  printf 'Downloaded runtime package has an invalid structure.\n' >&2
+  exit 65
+fi
+chmod 700 "$staged_runtime"
+actual_executable_sha256=$(calculate_sha256 "$staged_runtime" 2>/dev/null || true)
+if [ "$actual_executable_sha256" != "$executable_sha256" ]; then
+  printf 'Apple Health Sync executable checksum verification failed.\n' >&2
+  exit 65
+fi
+staged_version=$($staged_runtime --version 2>/dev/null || true)
+if [ "$staged_version" != "healthsync $runtime_version" ]; then
+  printf 'Downloaded runtime reported an unexpected version: %s\n' "$staged_version" >&2
+  exit 65
+fi
+"$staged_runtime" self-test >/dev/null
+printf '%s\n' "$runtime_sha256" > "$extract_dir/.verified-sha256"
+chmod 600 "$extract_dir/.verified-sha256"
+
+if [ -e "$runtime_dir" ] || [ -L "$runtime_dir" ]; then
+  if [ -L "$runtime_dir" ]; then
+    printf 'Refusing to replace a symbolic-link runtime directory: %s\n' "$runtime_dir" >&2
+    exit 78
+  fi
+  rm -rf -- "$runtime_dir"
+fi
+mv "$extract_dir" "$runtime_dir"
+rm -rf -- "$temporary_dir"
+temporary_dir=""
+rm -f -- "$lock_dir/pid" 2>/dev/null || true
+rmdir "$lock_dir" 2>/dev/null || true
+trap - EXIT HUP INT TERM
+printf 'Apple Health Sync runtime is ready.\n' >&2
+exec "$runtime_path" "$@"
