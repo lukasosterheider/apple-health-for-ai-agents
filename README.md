@@ -4,4 +4,4 @@ Lightweight Apple Health Sync plugin for Codex. The platform-specific, self-cont
 
 Documentation: https://gethealthsync.app/
 
-Release: `plugin-v1.1.0`
+Release: `plugin-v1.1.1`

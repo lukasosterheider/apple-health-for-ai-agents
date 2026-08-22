@@ -40,6 +40,7 @@ In case this skill has been upgraded from <= v0.7.2, check the [upgrade guide](#
 - Protocol `v4` uses `config/secrets/private_key.pem`.
 - Protocol `v5` uses `config/secrets/signing_private_key_v5.pem` and `config/secrets/encryption_private_key_v5.pem`.
 - Cryptographic operations run in memory inside the self-contained runtime. It does not invoke OpenSSL or create temporary challenge, signature, ciphertext, or plaintext files.
+- Relay HTTPS uses the operating system trust store together with a bundled CA fallback. Certificate and hostname verification always remain enabled.
 - Keep state directories private (`0700`) and sensitive state, database, NDJSON, and report files private (`0600`) on platforms with POSIX permissions. On Windows, rely on the current user's filesystem access controls.
 
 ## Capability and data-flow contract
@@ -49,7 +50,7 @@ Stay within these declared boundaries:
 - **Process execution:** Run only the bundled `healthsync` launcher and native runtime. Do not use Python, pip, package managers, or unrelated executables.
 - **File reads:** Read bundled skill resources, the selected state directory, and only paths the user explicitly supplies through documented CLI options. Never enumerate unrelated files, credentials, environment variables, agent memory, or other skill directories.
 - **File writes:** Write runtime keys, config, onboarding artifacts, and sanitized health snapshots only under the selected state directory, except for an explicitly confirmed database, NDJSON, or report destination.
-- **Network:** The launcher may make a one-time HTTPS GET to the checksum-pinned runtime artifact under `https://github.com/lukasosterheider/healthsync-codex-marketplace/releases/download/plugin-v1.1.0/` and follow GitHub's HTTPS release-asset redirect. It sends no user, key, or health data. After bootstrap, send HTTPS requests only to the three exact relay URLs below. Reject every other host, path, query, redirect target passed as a relay request URL, or protocol before transmission.
+- **Network:** The launcher may make a one-time HTTPS GET to the checksum-pinned runtime artifact under `https://github.com/lukasosterheider/healthsync-codex-marketplace/releases/download/plugin-v1.1.1/` and follow GitHub's HTTPS release-asset redirect. It sends no user, key, or health data. After bootstrap, send HTTPS requests only to the three exact relay URLs below. Reject every other host, path, query, redirect target passed as a relay request URL, or protocol before transmission.
   - `https://snpiylxajnxpklpwdtdg.supabase.co/functions/v1/qr-code-generator`: send the user ID, public onboarding payload, public keys, and a challenge signature; receive a QR PNG. Never send private keys or health records.
   - `https://snpiylxajnxpklpwdtdg.supabase.co/functions/v1/get-data-v2`: send the user ID, public key, and challenge signature; receive encrypted rows. Decrypt and sanitize health data locally.
   - `https://snpiylxajnxpklpwdtdg.supabase.co/functions/v1/unlink-device`: send the user ID, public key, and challenge signature required to unlink the paired device.
@@ -63,8 +64,9 @@ The self-contained `healthsync` runtime and verified launcher expose these comma
 - `healthsync fetch`: Request encrypted data via challenge signing, decrypt rows, validate payloads, and persist sanitized results.
 - `healthsync unlink`: Reset write-token binding for a paired device via the signed challenge flow.
 - `healthsync summary`: Aggregate local snapshots into `daily|weekly|monthly` summaries.
-- `healthsync self-test`: Verify the packaged defaults and cryptographic primitives without network access or state changes.
-- `healthsync runtime status|verify|clean`: Inspect, validate, or remove only the launcher's versioned runtime cache.
+- `healthsync self-test`: Verify packaged defaults, cryptography, and strict TLS trust without network access or state changes.
+- `healthsync network-diagnostics`: Perform a verified, non-mutating `HEAD` request to the allowlisted QR endpoint. It does not create a challenge, rotate identity, fetch health data, or send key material.
+- `healthsync runtime status|verify|clean`: Inspect, locally validate, or remove only the launcher's versioned runtime cache. `verify` does not make a network request; use `network-diagnostics` for HTTPS.
 
 ## Workflow
 

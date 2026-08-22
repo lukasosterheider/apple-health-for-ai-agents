@@ -44,7 +44,7 @@ if [ -x "$bundled_runtime" ]; then
     verify)
       "$bundled_runtime" --version
       "$bundled_runtime" self-test >/dev/null
-      printf 'Apple Health Sync bundled runtime verified.\n'
+      printf 'Apple Health Sync bundled runtime verified locally (network not tested). Run healthsync network-diagnostics to test HTTPS.\n'
       exit 0
       ;;
     clean)
@@ -147,7 +147,7 @@ case "$runtime_action" in
       printf 'Apple Health Sync runtime %s is not installed or failed verification.\n' "$runtime_version" >&2
       exit 1
     fi
-    printf 'Apple Health Sync runtime %s verified for %s.\n' "$runtime_version" "$platform_tag"
+    printf 'Apple Health Sync runtime %s verified locally for %s (network not tested). Run healthsync network-diagnostics to test HTTPS.\n' "$runtime_version" "$platform_tag"
     exit 0
     ;;
   clean)

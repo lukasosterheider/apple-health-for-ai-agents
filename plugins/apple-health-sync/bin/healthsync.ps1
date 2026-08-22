@@ -47,7 +47,7 @@ if (Test-Path -LiteralPath $BundledRuntime -PathType Leaf) {
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             & $BundledRuntime self-test | Out-Null
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-            Write-Output "Apple Health Sync bundled runtime verified."
+            Write-Output "Apple Health Sync bundled runtime verified locally (network not tested). Run healthsync network-diagnostics to test HTTPS."
             exit 0
         }
         "clean" {
@@ -128,7 +128,7 @@ switch ($RuntimeAction) {
         if (-not (Test-VerifiedRuntime) -or -not (Test-RuntimeCommand)) {
             Fail "Apple Health Sync runtime $RuntimeVersion is not installed or failed verification." 1
         }
-        Write-Output "Apple Health Sync runtime $RuntimeVersion verified for $PlatformTag."
+        Write-Output "Apple Health Sync runtime $RuntimeVersion verified locally for $PlatformTag (network not tested). Run healthsync network-diagnostics to test HTTPS."
         exit 0
     }
     "clean" {
