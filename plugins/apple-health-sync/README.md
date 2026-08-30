@@ -1,6 +1,6 @@
 # Apple Health Sync plugin
 
-This directory is the shared Codex and Claude Code plugin source. End users do not need Python,
+This package integrates Apple Health Sync with Codex and Claude Code. End users do not need Python,
 pip, Node.js, or a compiler to run Apple Health Sync.
 
 Supported release targets:
@@ -11,9 +11,14 @@ Supported release targets:
 - Linux ARM64 (`linux-arm64`)
 - Windows x86-64 (`windows-x64`)
 
-The source Python implementation remains under `skills/apple-health-sync/scripts/`. Build each
-runtime on its target operating system with `helper-scripts/build_runtime_bundle.py`, then assemble
-the release variants with `helper-scripts/build_plugin_distributions.py`.
+The Python implementation is maintained in the public
+[portable skill source](https://github.com/lukasosterheider/apple-health-for-ai-agents/tree/main/skills/apple-health-sync).
+Maintainer build commands run from the `Private` checkout, with `Public` beside it.
+Build each runtime on its target operating system with
+`helper-scripts/build_runtime_bundle.py`, then assemble release variants with
+`helper-scripts/build_plugin_distributions.py`. Those helpers are private release
+tooling and are not part of this public package. Update generated plugin files
+through their private source templates; edit portable skills directly in Public.
 
 The Codex Git marketplace contains only the manifests, skill, launchers, and a checksum-pinned
 runtime index. On first use, its launcher downloads and atomically caches only the current
