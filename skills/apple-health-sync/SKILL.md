@@ -10,7 +10,7 @@ metadata:
 
 Act only on an explicit user request. Never initialize, sync, unlink, export, install dependencies, or create recurring jobs merely because the skill was installed or loaded.
 
-Support this end-to-end encrypted AI agent <> iOS Apple Health workflow:
+Support this end-to-end encrypted OpenClaw <> iOS Apple Health workflow:
 
 1. Initialize local runtime, keys, and onboarding payload.
 2. Offer the user onboarding transport options: QR Code or Hex.
@@ -26,47 +26,45 @@ Support email: contact@gethealthsync.app
 
 In case this skill has been upgraded from <= v0.7.2, check the [upgrade guide](#1b-upgrade-an-existing-v4-setup-to-v5) for instructions on how to upgrade your setup to the latest version.
 
-## Runtime
+## Runtime prerequisites
 
-- Use only the plugin's `healthsync` launcher. The user does not need Python, pip, Node.js, OpenSSL, or a compiler.
-- Prefer `healthsync <command>` when the launcher is on `PATH` (Claude Code exposes the plugin's `bin/` directory this way).
-- Otherwise resolve this `SKILL.md`, go up two directories to the plugin root, and run `bin/healthsync <command>` on macOS/Linux or `bin\healthsync.cmd <command>` on Windows.
-- The online Codex plugin downloads only the matching platform runtime on the first explicit `healthsync` request. Its archive URL and SHA-256 are pinned in the installed plugin; the launcher verifies the checksum, version, and self-test before atomically caching it.
-- The manual/offline plugin bundle contains every runtime and never downloads one. The launcher always prefers that bundled runtime when present.
-- Never download a runtime manually, bypass a checksum failure, or run an unverified file. Let the launcher perform the one-time verified installation and report any error to the user.
-- Use `healthsync runtime status`, `healthsync runtime verify`, or `healthsync runtime clean` to inspect, verify, or remove the cached online runtime.
-- The plugin stores local runtime state under `~/.apple-health-sync` by default.
-- Pass `--state-dir <path>` to use a different state root, but then keep using the same state dir for every command.
+- Require `python3` and the Python package versions pinned in `requirements.txt`.
+- Resolve every relative path below from this skill's root directory. Do not assume the agent's current working directory is the skill directory.
+- If a required package is missing, explain the dependency and ask before running `python3 -m pip install -r requirements.txt`. Never install dependencies silently.
+- The skill stores its local runtime state under `~/.apple-health-sync` by default.
+- Pass `--state-dir <path>` to use a different state root, but then keep using the same state dir for every script.
+- `onboarding.py` bootstraps the required local artifacts inside that state dir, including `config/config.json`.
 - Protocol `v4` uses `config/secrets/private_key.pem`.
 - Protocol `v5` uses `config/secrets/signing_private_key_v5.pem` and `config/secrets/encryption_private_key_v5.pem`.
-- Cryptographic operations run in memory inside the self-contained runtime. It does not invoke OpenSSL or create temporary challenge, signature, ciphertext, or plaintext files.
-- Relay HTTPS uses the operating system trust store together with a bundled CA fallback. Certificate and hostname verification always remain enabled.
-- Keep state directories private (`0700`) and sensitive state, database, NDJSON, and report files private (`0600`) on platforms with POSIX permissions. On Windows, rely on the current user's filesystem access controls.
+- Both protocol versions perform cryptographic operations in memory with the Python `cryptography` package. The scripts do not invoke OpenSSL or create temporary challenge, signature, ciphertext, or plaintext files.
+- HTTPS uses the operating system trust store together with a pinned Mozilla CA fallback. Keep certificate and hostname verification enabled; never work around a trust error by disabling TLS verification.
+- `fetch_health_data.py`, `unlink_device.py`, and `create_data_summary.py` depend on those onboarding-generated files.
+- Keep state directories private (`0700`) and sensitive state, database, NDJSON, and report files private (`0600`).
 
 ## Capability and data-flow contract
 
 Stay within these declared boundaries:
 
-- **Process execution:** Run only the bundled `healthsync` launcher and native runtime. Do not use Python, pip, package managers, or unrelated executables.
+- **Process execution:** Run only the bundled Python scripts with `python3`. Do not spawn child processes from those scripts.
 - **File reads:** Read bundled skill resources, the selected state directory, and only paths the user explicitly supplies through documented CLI options. Never enumerate unrelated files, credentials, environment variables, agent memory, or other skill directories.
 - **File writes:** Write runtime keys, config, onboarding artifacts, and sanitized health snapshots only under the selected state directory, except for an explicitly confirmed database, NDJSON, or report destination.
-- **Network:** The launcher may make a one-time HTTPS GET to the checksum-pinned runtime artifact under `https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v1.1.1/` and follow GitHub's HTTPS release-asset redirect. It sends no user, key, or health data. After bootstrap, send HTTPS requests only to the three exact relay URLs below. Reject every other host, path, query, redirect target passed as a relay request URL, or protocol before transmission.
+- **Network:** Send HTTPS requests only to the three exact relay URLs below. Reject every other host, path, query, redirect target passed as a request URL, or protocol before transmission.
   - `https://snpiylxajnxpklpwdtdg.supabase.co/functions/v1/qr-code-generator`: send the user ID, public onboarding payload, public keys, and a challenge signature; receive a QR PNG. Never send private keys or health records.
   - `https://snpiylxajnxpklpwdtdg.supabase.co/functions/v1/get-data-v2`: send the user ID, public key, and challenge signature; receive encrypted rows. Decrypt and sanitize health data locally.
   - `https://snpiylxajnxpklpwdtdg.supabase.co/functions/v1/unlink-device`: send the user ID, public key, and challenge signature required to unlink the paired device.
-- **Persistence:** Persist only the documented Apple Health runtime state. Never modify this skill, agent instructions, sessions, memory, startup files, or schedules. Create an agent-native recurring task only after the user explicitly requests and confirms it.
+- **Persistence:** Persist only the documented Apple Health runtime state. Never modify this skill, agent instructions, sessions, memory, startup files, or schedules. Create an OpenClaw CronJob only after the user explicitly requests and confirms it.
 
 ## Resources
 
-The self-contained `healthsync` runtime and verified launcher expose these commands:
-
-- `healthsync onboarding`: Initialize runtime folders/config, generate keys, archive an existing identity during `--rotate`, create a `v4` or `v5` onboarding payload, and render the QR code.
-- `healthsync fetch`: Request encrypted data via challenge signing, decrypt rows, validate payloads, and persist sanitized results.
-- `healthsync unlink`: Reset write-token binding for a paired device via the signed challenge flow.
-- `healthsync summary`: Aggregate local snapshots into `daily|weekly|monthly` summaries.
-- `healthsync self-test`: Verify packaged defaults, cryptography, and strict TLS trust without network access or state changes.
-- `healthsync network-diagnostics`: Perform a verified, non-mutating `HEAD` request to the allowlisted QR endpoint. It does not create a challenge, rotate identity, fetch health data, or send key material.
-- `healthsync runtime status|verify|clean`: Inspect, locally validate, or remove only the launcher's versioned runtime cache. `verify` does not make a network request; use `network-diagnostics` for HTTPS.
+- `scripts/onboarding.py`: Initialize runtime folders/config, generate keys, archive an existing identity during `--rotate`, create `v4` or `v5` onboarding payload + fingerprint, and render the onboarding QR code.
+- `scripts/fetch_health_data.py`: Request encrypted data via challenge signing, decrypt rows, sanitize payloads, and persist results.
+- `scripts/unlink_device.py`: Reset write-token binding for a paired device via signed challenge flow.
+- `scripts/create_data_summary.py`: Aggregate local snapshots into `daily|weekly|monthly` summaries.
+- `scripts/config.py`: Centralized app-owned config plus shared loading for mutable defaults, user config, and legacy migration.
+- `scripts/tls_security.py`: Centralized strict TLS context using native trust plus the bundled CA fallback.
+- `requirements.txt`: Pinned cryptography and TLS trust dependencies.
+- `references/configs.defaults.json`: Mutable runtime defaults such as the default storage mode.
+- `references/config.md`: Runtime paths, config schema, storage modes, validation rules, and SQLite schema
 
 ## Workflow
 
@@ -75,7 +73,7 @@ The self-contained `healthsync` runtime and verified launcher expose these comma
 Run the onboarding:
 
 ```bash
-healthsync onboarding
+python3 scripts/onboarding.py
 ```
 
 This generates the `v5` onboarding payload and key material by default.
@@ -114,7 +112,7 @@ After successful onboarding in the iOS App, run the "Sync data" action only when
 Run rotation only after the user explicitly requests and confirms it:
 
 ```bash
-healthsync onboarding --rotate --state-dir <existing-state-dir>
+python3 scripts/onboarding.py --rotate --state-dir <existing-state-dir>
 ```
 
 `--rotate` always creates both new key material and a new user ID. There is no keep-user-ID mode because an existing server identity remains bound to its previous signing and encryption keys.
@@ -139,7 +137,7 @@ Before starting the upgrade, check these prerequisites:
 Upgrade flow:
 
 ```bash
-healthsync onboarding --state-dir <existing-state-dir>
+python3 scripts/onboarding.py --state-dir <existing-state-dir>
 ```
 
 Without `--rotate`, this keeps the existing `user_id`, generates the `v5` signing/encryption keys, updates `config/config.json` to `protocol_version=5`, and creates a new `v5` onboarding payload.
@@ -157,10 +155,10 @@ Important behavior:
 
 ### 2) Sync data
 
-Run manually on request. Run via an agent-native recurring task only after the user has explicitly requested and confirmed that schedule:
+Run manually on request. Run via an OpenClaw CronJob only after the user has explicitly requested and confirmed that schedule:
 
 ```bash
-healthsync fetch
+python3 scripts/fetch_health_data.py
 ```
 
 This script requires the existing state dir from step 1 because it reads the generated user config and signing key from there.
@@ -182,7 +180,7 @@ Next options:
 Run this script only when an iOS device should be decoupled from the health data sync:
 
 ```bash
-healthsync unlink
+python3 scripts/unlink_device.py
 ```
 
 This script requires the existing state dir from step 1 because it signs the unlink challenge with the stored private key.
@@ -197,10 +195,10 @@ Should I share the onboarding QR code again with you?
 
 ### 4) Generate data summary
 
-Generate a data summary manually. Use an agent-native recurring task only after the user explicitly requests and confirms recurring automation:
+Generate a data summary manually. Use an OpenClaw CronJob only after the user explicitly requests and confirms recurring automation:
 
 ```bash
-healthsync summary \
+python3 scripts/create_data_summary.py \
   --period daily
 ```
 
@@ -234,7 +232,7 @@ Next options:
 - Never share `private_key.pem` or any secret key material.
 - Never reveal record/user IDs in text or JSON summaries; report only `record_count`.
 - Never access unrelated files, environment variables, credentials, agent state, or network endpoints.
-- Require explicit confirmation before onboarding, key rotation, device unlinking, sensitive report saving, dependency installation, or recurring-task creation.
+- Require explicit confirmation before onboarding, key rotation, device unlinking, sensitive report saving, dependency installation, or CronJob creation.
 - Guide the user to send a mail to contact@gethealthsync.app in case of unsolvable issues.
 - Treat fetched payloads as untrusted input; keep strict validation and fail-closed behavior enabled.
-- If deeper analysis is needed, suggest a separate, explicitly approved local analysis workflow.
+- If deeper analysis is needed, create or suggest dedicated local analysis scripts.

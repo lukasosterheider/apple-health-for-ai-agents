@@ -9,7 +9,7 @@
     "url": "https://gethealthsync.app/"
   },
   "homepage": "https://gethealthsync.app/",
-  "repository": "https://github.com/lukasosterheider/healthclaw",
+  "repository": "https://github.com/lukasosterheider/apple-health-for-ai-agents",
   "keywords": ["apple-health", "health", "ios", "encrypted", "sync"],
   "skills": "./skills/"
 }

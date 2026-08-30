@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+/plugins/apple-health-sync/runtime/
+# Runtime state and private material must never be committed.
+.apple-health-sync/
+*.pem
+*.key
+*.db
+*.sqlite
+*.sqlite3
+*.ndjson
+registration-qr.*
