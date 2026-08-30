@@ -16,7 +16,7 @@ codex plugin add apple-health-sync@healthsync
 Restart Codex and start a new task. On first use, the plugin downloads only the
 runtime for your operating system and verifies the package and executable checksums.
 
-## Connect your iPhone
+## Start onboarding and Connect your iPhone
 
 Send this in the new task:
 

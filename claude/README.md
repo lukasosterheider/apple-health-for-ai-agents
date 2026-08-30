@@ -33,7 +33,7 @@ Upload the ZIP as downloaded, without extracting or repacking it. Its portable
 source is in [`generic-skill/apple-health-sync`](../generic-skill/apple-health-sync).
 See the [Claude Web guide](https://gethealthsync.app/#install-claude-web) for the illustrated steps.
 
-## Connect your iPhone
+## Start onboarding and Connect your iPhone
 
 Start a fresh conversation in Claude and send:
 

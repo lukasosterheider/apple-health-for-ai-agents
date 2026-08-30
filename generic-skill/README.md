@@ -27,7 +27,7 @@ The download link follows the latest stable GitHub release. Each release also
 provides `apple-health-sync-agent-skill.zip.sha256`. For a fixed version, use that
 release's download link instead of `releases/latest/download`.
 
-## Connect your iPhone
+## Start onboarding and Connect your iPhone
 
 Start a fresh agent conversation and send:
 

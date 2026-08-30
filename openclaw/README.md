@@ -16,7 +16,7 @@ Continue only after both commands succeed. You can inspect the published package
 on [ClawHub](https://clawhub.ai/lukasosterheider/skills/apple-health-sync).
 The skill uses Python 3 and the dependencies listed in its `requirements.txt`.
 
-## Connect your iPhone
+## Start onboarding and Connect your iPhone
 
 Start a new OpenClaw chat and send:
 
