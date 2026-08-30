@@ -10,7 +10,7 @@ Choose a platform for installation instructions:
 | [claude](claude/README.md) | Install the Claude Code plugin or upload the skill ZIP in Claude Web. |
 | [generic-skill](generic-skill/README.md) | Install the portable skill with the Agent Skills CLI or a manual ZIP import. |
 
-The instructions follow the [website installation guide](https://gethealthsync.app/#installation).
+The instructions follow the [website installation guide](https://gethealthsync.app/#ready-in-seconds).
 Native runtimes and offline plugin bundles are in
 [GitHub Releases](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases).
 
