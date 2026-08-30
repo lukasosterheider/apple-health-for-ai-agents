@@ -38,6 +38,10 @@ func outputParent(path string, create bool) error {
 	return nil
 }
 func openDatabase(path string, create bool) (*sql.DB, error) {
+	path, err := filepath.Abs(path)
+	if err != nil {
+		return nil, err
+	}
 	if err := outputParent(path, create); err != nil {
 		return nil, err
 	}
@@ -66,7 +70,12 @@ func openDatabase(path string, create bool) (*sql.DB, error) {
 	if err = restrictPath(path, false); err != nil {
 		return nil, err
 	}
-	uri := url.URL{Scheme: "file", Path: filepath.ToSlash(path)}
+	uriPath := filepath.ToSlash(path)
+	// SQLite expects /C:/... for Windows drive paths, with no URI authority.
+	if !strings.HasPrefix(uriPath, "/") {
+		uriPath = "/" + uriPath
+	}
+	uri := url.URL{Scheme: "file", Path: uriPath}
 	query := uri.Query()
 	query.Set("mode", "rw")
 	query.Add("_pragma", "busy_timeout(5000)")
