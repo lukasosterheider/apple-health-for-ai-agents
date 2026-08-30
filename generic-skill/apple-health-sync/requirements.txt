@@ -1,5 +1,0 @@
-# 50.0.0 is the first release that fixes all CVE-2026-69247/-69248/-69249 findings.
-cryptography>=50.0.0,<51
-# Use native OS trust policy and retain a deterministic Mozilla CA fallback.
-truststore==0.10.4
-certifi==2026.7.22

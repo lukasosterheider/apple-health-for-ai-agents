@@ -2,16 +2,16 @@
   "_id": "apple-health-sync-agent-plugin",
   "name": "apple-health-sync-agent-plugin",
   "dist-tags": {
-    "latest": "1.1.1"
+    "latest": "2.0.0"
   },
   "versions": {
-    "1.1.1": {
+    "2.0.0": {
       "name": "apple-health-sync-agent-plugin",
-      "version": "1.1.1",
+      "version": "2.0.0",
       "dist": {
-        "tarball": "https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v1.1.1/apple-health-sync-agent-plugin-1.1.1.tgz",
-        "shasum": "4a3571e204408d761a4e0e7aaf148e08c283c233",
-        "integrity": "sha512-q7yfetwX1eYQFN6jA0gscO+BwWzprOGjiOVfwVFApITJs/xVncmAR6q/JFBjChPItfws55mZCiX7F4+M0x0Y2A=="
+        "tarball": "https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.0/apple-health-sync-agent-plugin-2.0.0.tgz",
+        "shasum": "8343b4c9e3e0c3461cbdab84265f9afb71484121",
+        "integrity": "sha512-QpjiA8zvIlN8DsQf2oa+bidZ+0UW/xULkz9MgwyOlf7oC8XK4VeXvtfRT6A9G5Y6N6y2vkN0CBYvNXxatdmVfA=="
       }
     }
   }

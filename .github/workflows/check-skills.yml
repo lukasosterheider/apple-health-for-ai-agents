@@ -1,4 +1,4 @@
-name: Check public skills
+name: Check Go CLI and generated adapters
 
 on:
   push:
@@ -11,13 +11,33 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            platform: linux-x64
+          - os: ubuntu-22.04-arm
+            platform: linux-arm64
+          - os: macos-15
+            platform: darwin-arm64
+          - os: macos-15-intel
+            platform: darwin-x64
+          - os: windows-2022
+            platform: windows-x64
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: cli/go.mod
+          cache-dependency-path: cli/go.sum
       - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
-          cache: pip
-          cache-dependency-path: generic-skill/apple-health-sync/requirements.txt
-      - run: python -m pip install -r generic-skill/apple-health-sync/requirements.txt
-      - run: python -m unittest discover -s generic-skill/apple-health-sync/scripts -p 'test_*.py' -v
+      - run: go -C cli test -race ./...
+      - run: go -C cli vet ./...
+      - name: Verify native runner platform
+        run: python -c "import sys; sys.path.insert(0, 'tools'); from build_runtime import native_platform_tag; assert native_platform_tag() == '${{ matrix.platform }}'"
+      - run: python tools/build_runtime.py --platform ${{ matrix.platform }}
+      - run: python tools/build_distributions.py --check --require-release
+      - run: python -m unittest discover -s tools/tests -v

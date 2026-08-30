@@ -1,0 +1,39 @@
+{
+  "name": "apple-health-sync",
+  "description": "Apple Health Sync integration using the shared healthsync CLI.",
+  "author": {
+    "name": "Lukas Osterheider",
+    "email": "support@gethealthsync.app",
+    "url": "https://gethealthsync.app/"
+  },
+  "homepage": "https://gethealthsync.app/",
+  "repository": "https://github.com/lukasosterheider/apple-health-for-ai-agents",
+  "keywords": [
+    "apple-health",
+    "health",
+    "ios",
+    "encrypted",
+    "sync"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Health Sync",
+    "shortDescription": "Encrypted Apple Health access for Codex",
+    "longDescription": "Pair an iPhone, fetch and decrypt Apple Health data locally, and generate private summaries with a verified platform runtime.",
+    "developerName": "Health Sync",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://gethealthsync.app/",
+    "privacyPolicyURL": "https://gethealthsync.app/privacy/",
+    "termsOfServiceURL": "https://gethealthsync.app/terms/",
+    "defaultPrompt": [
+      "Use Apple Health Sync and start onboarding with a QR code.",
+      "Use Apple Health Sync to fetch my latest health data.",
+      "Create a weekly summary from my locally synced Apple Health data."
+    ],
+    "brandColor": "#0F766E"
+  }
+}
