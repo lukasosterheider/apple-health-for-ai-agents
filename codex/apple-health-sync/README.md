@@ -12,7 +12,7 @@ Supported release targets:
 - Windows x86-64 (`windows-x64`)
 
 The Python implementation is maintained in the public
-[portable skill source](https://github.com/lukasosterheider/apple-health-for-ai-agents/tree/main/skills/apple-health-sync).
+[portable skill source](https://github.com/lukasosterheider/apple-health-for-ai-agents/tree/main/generic-skill/apple-health-sync).
 Maintainer build commands run from the `Private` checkout, with `Public` beside it.
 Build each runtime on its target operating system with
 `helper-scripts/build_runtime_bundle.py`, then assemble release variants with

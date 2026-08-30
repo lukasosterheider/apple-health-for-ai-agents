@@ -8,7 +8,7 @@
       "name": "apple-health-sync",
       "source": {
         "source": "local",
-        "path": "./plugins/apple-health-sync"
+        "path": "./codex/apple-health-sync"
       },
       "policy": {
         "installation": "AVAILABLE",
