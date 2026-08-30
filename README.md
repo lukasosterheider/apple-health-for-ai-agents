@@ -11,7 +11,7 @@ Choose a platform for installation instructions:
 | [generic-skill](generic-skill/README.md) | Install the portable skill with the Agent Skills CLI or a manual ZIP import. |
 
 The instructions follow the [website installation guide](https://gethealthsync.app/#ready-in-seconds).
-Native runtimes and offline plugin bundles are in
+The portable skill ZIP, native runtimes, and offline plugin bundles are in
 [GitHub Releases](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases).
 
 ## Repository layout
@@ -24,6 +24,7 @@ codex/
 claude/
   README.md                   Claude Code and Claude Web installation guides
   marketplace.json            Claude Code marketplace metadata
+  npm/                        Package metadata pointing to GitHub Releases
 generic-skill/
   README.md                   Portable installation and development guide
   apple-health-sync/          Shared skill instructions, Python source, and tests
@@ -43,8 +44,9 @@ READMEs and the shared source.
 
 The local workspace contains sibling `Private` and `Public` Git repositories.
 Private holds the app, backend, website, plugin templates, and release tooling;
-this repository is Public. Existing plugin IDs, installation URLs, release tags,
-and release assets remain unchanged by the platform directory reorganization.
+this repository is Public. Installation downloads are hosted on GitHub. Existing
+plugin IDs and release tags stay unchanged; the former website download URLs remain
+available for compatibility.
 
 Keep private keys, onboarding artifacts, local configuration, and health data out
 of this repository. Runtime state belongs in the user's private state directory.

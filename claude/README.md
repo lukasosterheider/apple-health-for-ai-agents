@@ -8,21 +8,23 @@ Both installation routes match the [website guide](https://gethealthsync.app/#in
 Run both commands in your terminal:
 
 ```bash
-claude plugin marketplace add https://gethealthsync.app/downloads/apple-health-sync-claude-marketplace.json
+claude plugin marketplace add https://raw.githubusercontent.com/lukasosterheider/apple-health-for-ai-agents/main/claude/marketplace.json
 claude plugin install apple-health-sync@healthsync
 ```
 
 Restart Claude Code or run `/reload-plugins`. The plugin includes its runtime;
 Python and pip are not required on the user's computer.
 
-[`marketplace.json`](marketplace.json) mirrors the marketplace metadata served
-by the website. The package archive is hosted in
-[GitHub Releases](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases),
-so native binaries do not need to be checked into this repository.
+[`marketplace.json`](marketplace.json) and the npm-compatible package metadata in
+[`npm/`](npm/) are served directly from this repository. Claude Code downloads the
+self-contained package from
+[GitHub Releases](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases)
+and verifies its integrity. Installation no longer depends on website downloads.
+The plugin ID and marketplace name are unchanged.
 
 ## Claude Web
 
-1. Download [apple-health-sync-agent-skill.zip](https://gethealthsync.app/downloads/apple-health-sync-agent-skill.zip).
+1. Download [apple-health-sync-agent-skill.zip](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/latest/download/apple-health-sync-agent-skill.zip).
 2. Enable Code execution under **Settings → Capabilities**.
 3. Open **Customize → Skills → + Create skill → Upload a skill**.
 4. Upload the ZIP and enable Apple Health Sync.

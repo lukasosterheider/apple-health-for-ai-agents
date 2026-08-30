@@ -9,7 +9,7 @@ The installation routes below match the
 With Node.js 18 or newer installed, run:
 
 ```bash
-npx skills add https://gethealthsync.app/downloads/apple-health-sync-agent-skill.zip
+npx skills add https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/latest/download/apple-health-sync-agent-skill.zip
 ```
 
 Select Hermes Agent or your compatible agent when prompted, then choose global
@@ -18,10 +18,14 @@ or project scope. The portable scripts need Python 3 and the dependencies in
 
 ## Manual ZIP installation
 
-Download [apple-health-sync-agent-skill.zip](https://gethealthsync.app/downloads/apple-health-sync-agent-skill.zip)
+Download [apple-health-sync-agent-skill.zip](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/latest/download/apple-health-sync-agent-skill.zip)
 and use your agent's skill import or installation flow. The ZIP contains one
 `apple-health-sync` folder with `SKILL.md` and its runtime resources. For Claude
 Web's upload steps, see [`claude/README.md`](../claude/README.md).
+
+The download link follows the latest stable GitHub release. Each release also
+provides `apple-health-sync-agent-skill.zip.sha256`. For a fixed version, use that
+release's download link instead of `releases/latest/download`.
 
 ## Connect your iPhone
 

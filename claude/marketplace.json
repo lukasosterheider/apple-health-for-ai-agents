@@ -15,7 +15,7 @@
         "source": "npm",
         "package": "apple-health-sync-agent-plugin",
         "version": "1.1.1",
-        "registry": "https://gethealthsync.app/downloads/npm/"
+        "registry": "https://raw.githubusercontent.com/lukasosterheider/apple-health-for-ai-agents/main/claude/npm/"
       },
       "description": "Securely sync end-to-end encrypted Apple Health data into Claude Code with a bundled native runtime.",
       "author": {
