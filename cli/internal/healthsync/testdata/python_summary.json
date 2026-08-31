@@ -1,0 +1,192 @@
+{
+  "source": "Captured from build/python-reference/healthsync/create_data_summary.py run(); synthetic data, fixed UTC clock. Presentation compatibility only; no records at the NDJSON start boundary.",
+  "now": "2026-08-30T12:00:00+00:00",
+  "cases": [
+    {
+      "name": "metrics-sqlite",
+      "period": "weekly",
+      "storage": "sqlite",
+      "samples": [
+        {
+          "user_id": "synthetic-one",
+          "date": "2026-08-28",
+          "payload": {
+            "steps": 100,
+            "heart": {
+              "rate": [
+                60,
+                80
+              ]
+            },
+            "distance": 1.25,
+            "ignored": true
+          }
+        },
+        {
+          "user_id": "synthetic-one",
+          "date": "2026-08-29",
+          "payload": {
+            "steps": 300,
+            "distance": 2.75
+          }
+        },
+        {
+          "user_id": "synthetic-two",
+          "date": "2026-08-30",
+          "payload": {
+            "steps": 500,
+            "temperature_change": -2.5
+          }
+        }
+      ],
+      "text": "Apple Health Summary (weekly)\nWindow: 2026-08-23T12:00:00+00:00 -> 2026-08-30T12:00:00+00:00\nSamples: 3\nSource records: 2\nNumeric metrics:\n- distance: avg=2.00, min=1.25, max=2.75, latest=2.75, n=2\n- heart.rate[]: avg=70.00, min=60.00, max=80.00, latest=80.00, n=2\n- steps: avg=300.00, min=100.00, max=500.00, latest=500.00, n=3\n- temperature_change: avg=-2.50, min=-2.50, max=-2.50, latest=-2.50, n=1\n",
+      "json": "{\n  \"period\": \"weekly\",\n  \"start\": \"2026-08-23T12:00:00+00:00\",\n  \"end\": \"2026-08-30T12:00:00+00:00\",\n  \"storage\": \"sqlite\",\n  \"summary\": {\n    \"sample_count\": 3,\n    \"record_count\": 2,\n    \"metrics\": {\n      \"distance\": {\n        \"count\": 2.0,\n        \"min\": 1.25,\n        \"max\": 2.75,\n        \"avg\": 2.0,\n        \"latest\": 2.75\n      },\n      \"heart.rate[]\": {\n        \"count\": 2.0,\n        \"min\": 60.0,\n        \"max\": 80.0,\n        \"avg\": 70.0,\n        \"latest\": 80.0\n      },\n      \"steps\": {\n        \"count\": 3.0,\n        \"min\": 100.0,\n        \"max\": 500.0,\n        \"avg\": 300.0,\n        \"latest\": 500.0\n      },\n      \"temperature_change\": {\n        \"count\": 1.0,\n        \"min\": -2.5,\n        \"max\": -2.5,\n        \"avg\": -2.5,\n        \"latest\": -2.5\n      }\n    }\n  }\n}\n"
+    },
+    {
+      "name": "metrics-json",
+      "period": "weekly",
+      "storage": "json",
+      "samples": [
+        {
+          "user_id": "synthetic-one",
+          "date": "2026-08-28",
+          "payload": {
+            "steps": 100,
+            "heart": {
+              "rate": [
+                60,
+                80
+              ]
+            },
+            "distance": 1.25,
+            "ignored": true
+          }
+        },
+        {
+          "user_id": "synthetic-one",
+          "date": "2026-08-29",
+          "payload": {
+            "steps": 300,
+            "distance": 2.75
+          }
+        },
+        {
+          "user_id": "synthetic-two",
+          "date": "2026-08-30",
+          "payload": {
+            "steps": 500,
+            "temperature_change": -2.5
+          }
+        }
+      ],
+      "text": "Apple Health Summary (weekly)\nWindow: 2026-08-23T12:00:00+00:00 -> 2026-08-30T12:00:00+00:00\nSamples: 3\nSource records: 2\nNumeric metrics:\n- distance: avg=2.00, min=1.25, max=2.75, latest=2.75, n=2\n- heart.rate[]: avg=70.00, min=60.00, max=80.00, latest=80.00, n=2\n- steps: avg=300.00, min=100.00, max=500.00, latest=500.00, n=3\n- temperature_change: avg=-2.50, min=-2.50, max=-2.50, latest=-2.50, n=1\n",
+      "json": "{\n  \"period\": \"weekly\",\n  \"start\": \"2026-08-23T12:00:00+00:00\",\n  \"end\": \"2026-08-30T12:00:00+00:00\",\n  \"storage\": \"json\",\n  \"summary\": {\n    \"sample_count\": 3,\n    \"record_count\": 2,\n    \"metrics\": {\n      \"distance\": {\n        \"count\": 2.0,\n        \"min\": 1.25,\n        \"max\": 2.75,\n        \"avg\": 2.0,\n        \"latest\": 2.75\n      },\n      \"heart.rate[]\": {\n        \"count\": 2.0,\n        \"min\": 60.0,\n        \"max\": 80.0,\n        \"avg\": 70.0,\n        \"latest\": 80.0\n      },\n      \"steps\": {\n        \"count\": 3.0,\n        \"min\": 100.0,\n        \"max\": 500.0,\n        \"avg\": 300.0,\n        \"latest\": 500.0\n      },\n      \"temperature_change\": {\n        \"count\": 1.0,\n        \"min\": -2.5,\n        \"max\": -2.5,\n        \"avg\": -2.5,\n        \"latest\": -2.5\n      }\n    }\n  }\n}\n"
+    },
+    {
+      "name": "empty-sqlite",
+      "period": "monthly",
+      "storage": "sqlite",
+      "samples": [],
+      "text": "Apple Health Summary (monthly)\nWindow: 2026-07-31T12:00:00+00:00 -> 2026-08-30T12:00:00+00:00\nSamples: 0\nSource records: 0\nNumeric metrics: none\n",
+      "json": "{\n  \"period\": \"monthly\",\n  \"start\": \"2026-07-31T12:00:00+00:00\",\n  \"end\": \"2026-08-30T12:00:00+00:00\",\n  \"storage\": \"sqlite\",\n  \"summary\": {\n    \"sample_count\": 0,\n    \"record_count\": 0,\n    \"metrics\": {}\n  }\n}\n"
+    },
+    {
+      "name": "empty-json",
+      "period": "monthly",
+      "storage": "json",
+      "samples": [],
+      "text": "Apple Health Summary (monthly)\nWindow: 2026-07-31T12:00:00+00:00 -> 2026-08-30T12:00:00+00:00\nSamples: 0\nSource records: 0\nNumeric metrics: none\n",
+      "json": "{\n  \"period\": \"monthly\",\n  \"start\": \"2026-07-31T12:00:00+00:00\",\n  \"end\": \"2026-08-30T12:00:00+00:00\",\n  \"storage\": \"json\",\n  \"summary\": {\n    \"sample_count\": 0,\n    \"record_count\": 0,\n    \"metrics\": {}\n  }\n}\n"
+    },
+    {
+      "name": "no-numbers-sqlite",
+      "period": "daily",
+      "storage": "sqlite",
+      "samples": [
+        {
+          "user_id": "synthetic-one",
+          "date": "2026-08-30",
+          "payload": {
+            "label": "synthetic",
+            "flag": false,
+            "empty": [],
+            "missing": null
+          }
+        }
+      ],
+      "text": "Apple Health Summary (daily)\nWindow: 2026-08-29T12:00:00+00:00 -> 2026-08-30T12:00:00+00:00\nSamples: 1\nSource records: 1\nNumeric metrics: none\n",
+      "json": "{\n  \"period\": \"daily\",\n  \"start\": \"2026-08-29T12:00:00+00:00\",\n  \"end\": \"2026-08-30T12:00:00+00:00\",\n  \"storage\": \"sqlite\",\n  \"summary\": {\n    \"sample_count\": 1,\n    \"record_count\": 1,\n    \"metrics\": {}\n  }\n}\n"
+    },
+    {
+      "name": "no-numbers-json",
+      "period": "daily",
+      "storage": "json",
+      "samples": [
+        {
+          "user_id": "synthetic-one",
+          "date": "2026-08-30",
+          "payload": {
+            "label": "synthetic",
+            "flag": false,
+            "empty": [],
+            "missing": null
+          }
+        }
+      ],
+      "text": "Apple Health Summary (daily)\nWindow: 2026-08-29T12:00:00+00:00 -> 2026-08-30T12:00:00+00:00\nSamples: 1\nSource records: 1\nNumeric metrics: none\n",
+      "json": "{\n  \"period\": \"daily\",\n  \"start\": \"2026-08-29T12:00:00+00:00\",\n  \"end\": \"2026-08-30T12:00:00+00:00\",\n  \"storage\": \"json\",\n  \"summary\": {\n    \"sample_count\": 1,\n    \"record_count\": 1,\n    \"metrics\": {}\n  }\n}\n"
+    },
+    {
+      "name": "number-format-sqlite",
+      "period": "daily",
+      "storage": "sqlite",
+      "samples": [
+        {
+          "user_id": "synthetic-one",
+          "date": "2026-08-30",
+          "payload": {
+            "zero": 0.0,
+            "negative_zero": -0.0,
+            "small_fixed": 0.0001,
+            "small_exponent": 1e-05,
+            "large_fixed": 1000000000000000.0,
+            "large_exponent": 1e+16,
+            "negative_exponent": -1e+20,
+            "decimal": 1234567890.123,
+            "tiny": 5e-324,
+            "large": 1.7976931348623157e+308
+          }
+        }
+      ],
+      "text": "Apple Health Summary (daily)\nWindow: 2026-08-29T12:00:00+00:00 -> 2026-08-30T12:00:00+00:00\nSamples: 1\nSource records: 1\nNumeric metrics:\n- decimal: avg=1234567890.12, min=1234567890.12, max=1234567890.12, latest=1234567890.12, n=1\n- large: avg=179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.00, min=179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.00, max=179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.00, latest=179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.00, n=1\n- large_exponent: avg=10000000000000000.00, min=10000000000000000.00, max=10000000000000000.00, latest=10000000000000000.00, n=1\n- large_fixed: avg=1000000000000000.00, min=1000000000000000.00, max=1000000000000000.00, latest=1000000000000000.00, n=1\n- negative_exponent: avg=-100000000000000000000.00, min=-100000000000000000000.00, max=-100000000000000000000.00, latest=-100000000000000000000.00, n=1\n- negative_zero: avg=0.00, min=-0.00, max=-0.00, latest=-0.00, n=1\n- small_exponent: avg=0.00, min=0.00, max=0.00, latest=0.00, n=1\n- small_fixed: avg=0.00, min=0.00, max=0.00, latest=0.00, n=1\n- tiny: avg=0.00, min=0.00, max=0.00, latest=0.00, n=1\n- zero: avg=0.00, min=0.00, max=0.00, latest=0.00, n=1\n",
+      "json": "{\n  \"period\": \"daily\",\n  \"start\": \"2026-08-29T12:00:00+00:00\",\n  \"end\": \"2026-08-30T12:00:00+00:00\",\n  \"storage\": \"sqlite\",\n  \"summary\": {\n    \"sample_count\": 1,\n    \"record_count\": 1,\n    \"metrics\": {\n      \"decimal\": {\n        \"count\": 1.0,\n        \"min\": 1234567890.123,\n        \"max\": 1234567890.123,\n        \"avg\": 1234567890.123,\n        \"latest\": 1234567890.123\n      },\n      \"large\": {\n        \"count\": 1.0,\n        \"min\": 1.7976931348623157e+308,\n        \"max\": 1.7976931348623157e+308,\n        \"avg\": 1.7976931348623157e+308,\n        \"latest\": 1.7976931348623157e+308\n      },\n      \"large_exponent\": {\n        \"count\": 1.0,\n        \"min\": 1e+16,\n        \"max\": 1e+16,\n        \"avg\": 1e+16,\n        \"latest\": 1e+16\n      },\n      \"large_fixed\": {\n        \"count\": 1.0,\n        \"min\": 1000000000000000.0,\n        \"max\": 1000000000000000.0,\n        \"avg\": 1000000000000000.0,\n        \"latest\": 1000000000000000.0\n      },\n      \"negative_exponent\": {\n        \"count\": 1.0,\n        \"min\": -1e+20,\n        \"max\": -1e+20,\n        \"avg\": -1e+20,\n        \"latest\": -1e+20\n      },\n      \"negative_zero\": {\n        \"count\": 1.0,\n        \"min\": -0.0,\n        \"max\": -0.0,\n        \"avg\": 0.0,\n        \"latest\": -0.0\n      },\n      \"small_exponent\": {\n        \"count\": 1.0,\n        \"min\": 1e-05,\n        \"max\": 1e-05,\n        \"avg\": 1e-05,\n        \"latest\": 1e-05\n      },\n      \"small_fixed\": {\n        \"count\": 1.0,\n        \"min\": 0.0001,\n        \"max\": 0.0001,\n        \"avg\": 0.0001,\n        \"latest\": 0.0001\n      },\n      \"tiny\": {\n        \"count\": 1.0,\n        \"min\": 5e-324,\n        \"max\": 5e-324,\n        \"avg\": 5e-324,\n        \"latest\": 5e-324\n      },\n      \"zero\": {\n        \"count\": 1.0,\n        \"min\": 0.0,\n        \"max\": 0.0,\n        \"avg\": 0.0,\n        \"latest\": 0.0\n      }\n    }\n  }\n}\n"
+    },
+    {
+      "name": "number-format-json",
+      "period": "daily",
+      "storage": "json",
+      "samples": [
+        {
+          "user_id": "synthetic-one",
+          "date": "2026-08-30",
+          "payload": {
+            "zero": 0.0,
+            "negative_zero": -0.0,
+            "small_fixed": 0.0001,
+            "small_exponent": 1e-05,
+            "large_fixed": 1000000000000000.0,
+            "large_exponent": 1e+16,
+            "negative_exponent": -1e+20,
+            "decimal": 1234567890.123,
+            "tiny": 5e-324,
+            "large": 1.7976931348623157e+308
+          }
+        }
+      ],
+      "text": "Apple Health Summary (daily)\nWindow: 2026-08-29T12:00:00+00:00 -> 2026-08-30T12:00:00+00:00\nSamples: 1\nSource records: 1\nNumeric metrics:\n- decimal: avg=1234567890.12, min=1234567890.12, max=1234567890.12, latest=1234567890.12, n=1\n- large: avg=179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.00, min=179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.00, max=179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.00, latest=179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.00, n=1\n- large_exponent: avg=10000000000000000.00, min=10000000000000000.00, max=10000000000000000.00, latest=10000000000000000.00, n=1\n- large_fixed: avg=1000000000000000.00, min=1000000000000000.00, max=1000000000000000.00, latest=1000000000000000.00, n=1\n- negative_exponent: avg=-100000000000000000000.00, min=-100000000000000000000.00, max=-100000000000000000000.00, latest=-100000000000000000000.00, n=1\n- negative_zero: avg=0.00, min=-0.00, max=-0.00, latest=-0.00, n=1\n- small_exponent: avg=0.00, min=0.00, max=0.00, latest=0.00, n=1\n- small_fixed: avg=0.00, min=0.00, max=0.00, latest=0.00, n=1\n- tiny: avg=0.00, min=0.00, max=0.00, latest=0.00, n=1\n- zero: avg=0.00, min=0.00, max=0.00, latest=0.00, n=1\n",
+      "json": "{\n  \"period\": \"daily\",\n  \"start\": \"2026-08-29T12:00:00+00:00\",\n  \"end\": \"2026-08-30T12:00:00+00:00\",\n  \"storage\": \"json\",\n  \"summary\": {\n    \"sample_count\": 1,\n    \"record_count\": 1,\n    \"metrics\": {\n      \"decimal\": {\n        \"count\": 1.0,\n        \"min\": 1234567890.123,\n        \"max\": 1234567890.123,\n        \"avg\": 1234567890.123,\n        \"latest\": 1234567890.123\n      },\n      \"large\": {\n        \"count\": 1.0,\n        \"min\": 1.7976931348623157e+308,\n        \"max\": 1.7976931348623157e+308,\n        \"avg\": 1.7976931348623157e+308,\n        \"latest\": 1.7976931348623157e+308\n      },\n      \"large_exponent\": {\n        \"count\": 1.0,\n        \"min\": 1e+16,\n        \"max\": 1e+16,\n        \"avg\": 1e+16,\n        \"latest\": 1e+16\n      },\n      \"large_fixed\": {\n        \"count\": 1.0,\n        \"min\": 1000000000000000.0,\n        \"max\": 1000000000000000.0,\n        \"avg\": 1000000000000000.0,\n        \"latest\": 1000000000000000.0\n      },\n      \"negative_exponent\": {\n        \"count\": 1.0,\n        \"min\": -1e+20,\n        \"max\": -1e+20,\n        \"avg\": -1e+20,\n        \"latest\": -1e+20\n      },\n      \"negative_zero\": {\n        \"count\": 1.0,\n        \"min\": -0.0,\n        \"max\": -0.0,\n        \"avg\": 0.0,\n        \"latest\": -0.0\n      },\n      \"small_exponent\": {\n        \"count\": 1.0,\n        \"min\": 1e-05,\n        \"max\": 1e-05,\n        \"avg\": 1e-05,\n        \"latest\": 1e-05\n      },\n      \"small_fixed\": {\n        \"count\": 1.0,\n        \"min\": 0.0001,\n        \"max\": 0.0001,\n        \"avg\": 0.0001,\n        \"latest\": 0.0001\n      },\n      \"tiny\": {\n        \"count\": 1.0,\n        \"min\": 5e-324,\n        \"max\": 5e-324,\n        \"avg\": 5e-324,\n        \"latest\": 5e-324\n      },\n      \"zero\": {\n        \"count\": 1.0,\n        \"min\": 0.0,\n        \"max\": 0.0,\n        \"avg\": 0.0,\n        \"latest\": 0.0\n      }\n    }\n  }\n}\n"
+    }
+  ],
+  "save_stdout": "Report written to: <REPORT_PATH>\n",
+  "save_stderr": "Warning: this report contains sensitive Apple Health information. Keep the destination private and exclude it from shared backups.\n"
+}
