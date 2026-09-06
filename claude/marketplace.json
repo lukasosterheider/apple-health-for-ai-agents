@@ -6,16 +6,15 @@
     "url": "https://gethealthsync.app/"
   },
   "description": "Official Health Sync plugins for AI agents.",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "plugins": [
     {
       "name": "apple-health-sync",
       "displayName": "Apple Health Sync",
       "source": {
-        "source": "npm",
-        "package": "apple-health-sync-agent-plugin",
-        "version": "2.0.0",
-        "registry": "https://raw.githubusercontent.com/lukasosterheider/apple-health-for-ai-agents/main/claude/npm/"
+        "source": "archive",
+        "url": "https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.1/apple-health-sync-agent-plugin-2.0.1.zip",
+        "sha256": "85fe033c466b51dc3a79a59e6a2d412fde1d1d00d3dc221bd635f8e0fd829b88"
       },
       "description": "Securely sync end-to-end encrypted Apple Health data into Claude Code with a bundled native runtime.",
       "author": {
