@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 TOOLS_ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +43,25 @@ class ReleasePromotionTests(unittest.TestCase):
 
         with self.assertRaisesRegex(RuntimeError, "missing required assets"):
             promotion.validate_release(release, self.VERSION)
+
+    @mock.patch("check_release_promotion.subprocess.run")
+    def test_source_check_excludes_generated_cli_package(self, run: mock.Mock) -> None:
+        run.return_value.returncode = 0
+
+        promotion.validate_release_source("plugin-v2.0.0", Path("checkout"))
+
+        command = run.call_args.args[0]
+        self.assertIn(":(exclude)cli/apple-health-sync", command)
+        self.assertIn("cli", command)
+        self.assertIn("src", command)
+        self.assertIn("tools", command)
+
+    @mock.patch("check_release_promotion.subprocess.run")
+    def test_source_drift_is_rejected(self, run: mock.Mock) -> None:
+        run.return_value.returncode = 1
+
+        with self.assertRaisesRegex(RuntimeError, "Build inputs differ"):
+            promotion.validate_release_source("plugin-v2.0.0")
 
 
 if __name__ == "__main__":

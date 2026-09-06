@@ -21,10 +21,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          python tools/check_release_promotion.py
           version="$(tr -d '\n' < cli/apple-health-sync/VERSION)"
           git fetch origin "refs/tags/plugin-v${version}:refs/tags/plugin-v${version}"
-          git diff --exit-code "plugin-v${version}" HEAD -- cli src tools
+          python tools/check_release_promotion.py --source-ref "plugin-v${version}"
 
   test:
     strategy:

@@ -6,12 +6,21 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
 
 from build_distributions import REPOSITORY, VERSION
+
+
+RELEASE_SOURCE_PATHS = (
+    "cli",
+    "src",
+    "tools",
+    ":(exclude)cli/apple-health-sync",
+)
 
 
 def required_asset_names(version: str) -> set[str]:
@@ -74,9 +83,26 @@ def fetch_release(repository: str, version: str, token: str = "") -> dict[str, A
     return payload
 
 
+def validate_release_source(source_ref: str, checkout: Path = Path(".")) -> None:
+    result = subprocess.run(
+        ["git", "diff", "--quiet", source_ref, "HEAD", "--", *RELEASE_SOURCE_PATHS],
+        cwd=checkout,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        return
+    if result.returncode == 1:
+        raise RuntimeError(f"Build inputs differ from release source {source_ref}")
+    detail = result.stderr.strip() or f"git diff exited with status {result.returncode}"
+    raise RuntimeError(f"Could not compare release source {source_ref}: {detail}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--release-json", type=Path, help="Validate a saved API response")
+    parser.add_argument("--source-ref", help="Require local build inputs to match this Git ref")
     arguments = parser.parse_args()
 
     if arguments.release_json:
@@ -85,6 +111,9 @@ def main() -> None:
         payload = fetch_release(REPOSITORY, VERSION, os.environ.get("GITHUB_TOKEN", ""))
     validate_release(payload, VERSION)
     print(f"Published release plugin-v{VERSION} contains every required asset.")
+    if arguments.source_ref:
+        validate_release_source(arguments.source_ref)
+        print(f"Build inputs match release source {arguments.source_ref}.")
 
 
 if __name__ == "__main__":
