@@ -54,7 +54,9 @@ class ReleasePromotionTests(unittest.TestCase):
         self.assertIn(":(exclude)cli/apple-health-sync", command)
         self.assertIn("cli", command)
         self.assertIn("src", command)
-        self.assertIn("tools", command)
+        self.assertIn("tools/build_distributions.py", command)
+        self.assertIn("tools/build_runtime.py", command)
+        self.assertNotIn("tools", command)
 
     @mock.patch("check_release_promotion.subprocess.run")
     def test_source_drift_is_rejected(self, run: mock.Mock) -> None:

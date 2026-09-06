@@ -18,7 +18,8 @@ from build_distributions import REPOSITORY, VERSION
 RELEASE_SOURCE_PATHS = (
     "cli",
     "src",
-    "tools",
+    "tools/build_distributions.py",
+    "tools/build_runtime.py",
     ":(exclude)cli/apple-health-sync",
 )
 
