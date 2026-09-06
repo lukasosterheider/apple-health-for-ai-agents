@@ -10,8 +10,8 @@
       "version": "2.0.0",
       "dist": {
         "tarball": "https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.0/apple-health-sync-agent-plugin-2.0.0.tgz",
-        "shasum": "efb2ce92060541b3fa9f2e68e924368978fafb8f",
-        "integrity": "sha512-PPTVCAT8OkHqJFymam6R+BjJgSMhNdf1R7jKUWJNERRo5hl6frzAXM4e00N2yDv4FNQWQFeJzsVifCn9S09aEA=="
+        "shasum": "fa94e03a2892f4ead90b69c2ab9782fb163902ed",
+        "integrity": "sha512-1uJ6vHjYZh2KPYULojS6wYe4IjyiBifSjEjYygBFlNaVssOD1x8PbYHnT4gpe3/94IlkF3HkGKRdFI876TDEWw=="
       }
     }
   }
