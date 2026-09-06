@@ -9,13 +9,13 @@ Download and extract the archive for your system:
 
 | System | Download |
 | --- | --- |
-| macOS 13+, Apple Silicon | [ARM64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.0/apple-health-sync-runtime-2.0.0-darwin-arm64.tar.gz) |
-| macOS 13+, Intel | [x64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.0/apple-health-sync-runtime-2.0.0-darwin-x64.tar.gz) |
-| Linux, Intel/AMD | [x64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.0/apple-health-sync-runtime-2.0.0-linux-x64.tar.gz) |
-| Linux, ARM64 | [ARM64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.0/apple-health-sync-runtime-2.0.0-linux-arm64.tar.gz) |
-| Windows 10+, Intel/AMD | [x64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.0/apple-health-sync-runtime-2.0.0-windows-x64.zip) |
+| macOS 13+, Apple Silicon | [ARM64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.1/apple-health-sync-runtime-2.0.1-darwin-arm64.tar.gz) |
+| macOS 13+, Intel | [x64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.1/apple-health-sync-runtime-2.0.1-darwin-x64.tar.gz) |
+| Linux, Intel/AMD | [x64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.1/apple-health-sync-runtime-2.0.1-linux-x64.tar.gz) |
+| Linux, ARM64 | [ARM64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.1/apple-health-sync-runtime-2.0.1-linux-arm64.tar.gz) |
+| Windows 10+, Intel/AMD | [x64](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/download/plugin-v2.0.1/apple-health-sync-runtime-2.0.1-windows-x64.zip) |
 
-The [release page](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/tag/plugin-v2.0.0)
+The [release page](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/tag/plugin-v2.0.1)
 includes `SHA256SUMS` to verify downloads. Place `healthsync` or `healthsync.exe`
 in a directory on your `PATH`. No other files are needed beside the executable.
 Without changing `PATH`, use `./healthsync` on macOS/Linux or `.\healthsync.exe`

@@ -151,11 +151,13 @@ def check_release_metadata(root: Path) -> None:
     try:
         marketplace = json.loads((root / "claude/marketplace.json").read_text())
         source = marketplace["plugins"][0]["source"]
-        if marketplace["name"] != "healthsync" or marketplace["version"] != VERSION or source != {
-            "source": "npm", "package": "apple-health-sync-agent-plugin", "version": VERSION,
-            "registry": f"https://raw.githubusercontent.com/{REPOSITORY}/main/claude/npm/",
-        }:
+        archive_url = f"https://github.com/{REPOSITORY}/releases/download/plugin-v{VERSION}/apple-health-sync-agent-plugin-{VERSION}.zip"
+        if (marketplace["name"] != "healthsync" or marketplace["version"] != VERSION
+                or set(source) != {"source", "url", "sha256"}
+                or source["source"] != "archive" or source["url"] != archive_url):
             raise ValueError("Claude marketplace does not match the release version")
+        if not isinstance(source["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", source["sha256"]):
+            raise ValueError("Claude archive requires a SHA-256 checksum")
         npm = json.loads((root / "claude/npm/apple-health-sync-agent-plugin").read_text())
         package = npm["versions"][VERSION]
         expected = f"https://github.com/{REPOSITORY}/releases/download/plugin-v{VERSION}/apple-health-sync-agent-plugin-{VERSION}.tgz"
