@@ -108,7 +108,7 @@ func (a *app) summary(s *state, o options) error {
 	days := map[string]int{"daily": 1, "weekly": 7, "monthly": 30}[o.period]
 	end := a.now().UTC().Truncate(time.Second)
 	start := end.Add(-time.Duration(days) * 24 * time.Hour)
-	samples, err := loadSamples(kind, path, start.Format("2006-01-02"))
+	samples, err := loadSamples(kind, path, start)
 	if err != nil {
 		return err
 	}

@@ -10,6 +10,22 @@ permissions:
   contents: read
 
 jobs:
+  release-ready:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Require immutable release assets before marketplace activation
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python tools/check_release_promotion.py
+          version="$(tr -d '\n' < cli/apple-health-sync/VERSION)"
+          git fetch origin "refs/tags/plugin-v${version}:refs/tags/plugin-v${version}"
+          git diff --exit-code "plugin-v${version}" HEAD -- cli src tools
+
   test:
     strategy:
       fail-fast: false

@@ -39,12 +39,21 @@ the production relay. Unit tests use synthetic data and mock or localhost server
 
 1. Update `cli/internal/healthsync/version.go` and versioned download links in the CLI guide.
 2. Build all five binaries, run native tests and regenerate the packages.
-3. Generate download manifests from the exact release archives. Each manifest must
+3. Run the private release workflow with promotion disabled. It tags the pinned
+   public source, uploads the assets as a draft, verifies downloaded copies and
+   publishes the release.
+4. Generate download manifests from the exact release archives. Each manifest must
    pin the version, archive checksum and executable checksum for every platform.
-4. Run `python3 tools/build_distributions.py --check --require-release` against
+5. Run `python3 tools/build_distributions.py --check --require-release` against
    the assembled repository. Keep the manifest files with the generated packages.
-5. Publish matching GitHub release assets before directing users to the updated
-   marketplace. Never replace the contents of an existing release version.
+6. Merge the public marketplace changes only after the `release-ready` check passes.
+7. Run the private workflow with promotion enabled. It verifies that public `main`
+   matches the pinned build inputs before updating marketplaces and website metadata.
+
+Never replace the contents of a published release version. A failed preparation may
+leave a draft release, which a later run can resume only when existing assets match.
+The release-ready check also compares `cli`, `src`, and `tools` with the release tag,
+so any source change after preparation requires a new version and release.
 
 The generator preserves valid runtime manifests when refreshing package templates.
 After a version change, replace them with manifests for the new release.

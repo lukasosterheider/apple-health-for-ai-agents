@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -199,10 +200,27 @@ func storeJSON(path string, envelope map[string]any) error {
 
 type sample struct {
 	userID, date string
+	dateTime     time.Time
 	data         map[string]any
 }
 
-func loadSamples(kind, path, start string) ([]sample, error) {
+func parseStoredTime(value string) (time.Time, error) {
+	layouts := []string{
+		time.RFC3339Nano,
+		"2006-01-02T15:04:05",
+		"2006-01-02 15:04:05",
+		"2006-01-02",
+	}
+	for _, layout := range layouts {
+		parsed, err := time.ParseInLocation(layout, value, time.UTC)
+		if err == nil {
+			return parsed.UTC(), nil
+		}
+	}
+	return time.Time{}, fmt.Errorf("invalid stored timestamp %q", value)
+}
+
+func loadSamples(kind, path string, start time.Time) ([]sample, error) {
 	var result []sample
 	if kind == "sqlite" {
 		db, err := openDatabase(path, false)
@@ -213,18 +231,25 @@ func loadSamples(kind, path, start string) ([]sample, error) {
 			return nil, err
 		}
 		defer db.Close()
-		rows, err := db.Query("SELECT user_id,date,data FROM health_data WHERE date>=? ORDER BY date,id", start)
+		rows, err := db.Query("SELECT user_id,date,data,updated_at FROM health_data WHERE date>=? ORDER BY date,id", start.UTC().Format("2006-01-02"))
 		if err != nil {
 			return nil, err
 		}
 		defer rows.Close()
 		for rows.Next() {
-			var s sample
-			var data string
-			if err = rows.Scan(&s.userID, &s.date, &data); err != nil {
+			var userID, date, data, updatedAt sql.NullString
+			if err = rows.Scan(&userID, &date, &data, &updatedAt); err != nil {
 				return nil, err
 			}
-			if decodeObject([]byte(data), &s.data) != nil {
+			if !userID.Valid || !date.Valid || !data.Valid || !updatedAt.Valid {
+				continue
+			}
+			s := sample{userID: userID.String, date: date.String}
+			s.dateTime, err = parseStoredTime(s.date)
+			if first(s.userID) == "" || err != nil {
+				continue
+			}
+			if _, err = parseStoredTime(updatedAt.String); err != nil || decodeObject([]byte(data.String), &s.data) != nil {
 				continue
 			}
 			result = append(result, s)
@@ -254,19 +279,26 @@ func loadSamples(kind, path, start string) ([]sample, error) {
 			continue
 		}
 		id := first(textValue(row, "user_id"), textValue(row, "record_id"))
+		if id == "" {
+			continue
+		}
+		if _, err = parseStoredTime(textValue(row, "fetched_at")); err != nil {
+			continue
+		}
 		for _, day := range sortedKeys(payload) {
-			if day < start {
+			dayTime, parseErr := parseStoredTime(day)
+			if parseErr != nil || dayTime.Before(start) {
 				continue
 			}
 			value, ok := payload[day].(map[string]any)
 			if ok {
-				result = append(result, sample{id, day, value})
+				result = append(result, sample{id, day, dayTime, value})
 			}
 		}
 	}
 	if err = scanner.Err(); err != nil {
 		return nil, fmt.Errorf("reading NDJSON: %w", err)
 	}
-	sort.SliceStable(result, func(i, j int) bool { return result[i].date < result[j].date })
+	sort.SliceStable(result, func(i, j int) bool { return result[i].dateTime.Before(result[j].dateTime) })
 	return result, nil
 }

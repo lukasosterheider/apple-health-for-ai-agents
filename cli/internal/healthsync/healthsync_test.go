@@ -252,7 +252,7 @@ func TestEndToEndFixtureFetchSummaryUnlink(t *testing.T) {
 	dbPath := filepath.Join(t.TempDir(), "records.db")
 	runOK(t, a, errOut, "fetch", "--state-dir", s.root, "--sqlite-path", dbPath, "--record-id", rawString(f, "user_id"), "--public-key", rawString(f, "signing_public"), "--private-key-path", textValue(s.config, "signing_private_key_path"), "--timeout-seconds", "1")
 	runOK(t, a, errOut, "fetch", "--state-dir", s.root, "--sqlite-path", dbPath)
-	samples, err := loadSamples("sqlite", dbPath, "2026-08-01")
+	samples, err := loadSamples("sqlite", dbPath, time.Date(2026, 8, 1, 0, 0, 0, 0, time.UTC))
 	if err != nil || len(samples) != 2 {
 		t.Fatal("upsert failed", samples, err)
 	}
@@ -530,7 +530,7 @@ func TestLegacySQLiteMigrationPreservesNewerRecords(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	samples, err := loadSamples("sqlite", path, "2026-08-01")
+	samples, err := loadSamples("sqlite", path, time.Date(2026, 8, 1, 0, 0, 0, 0, time.UTC))
 	if err != nil || len(samples) != 1 || !reflect.DeepEqual(samples[0].data, map[string]any{"steps": json.Number("10")}) {
 		t.Fatal(samples, err)
 	}
