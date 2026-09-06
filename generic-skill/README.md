@@ -1,31 +1,24 @@
-# Portable Apple Health Sync skill
+# Apple Health Sync for other agents
 
-Use this Agent Skills package with Hermes Agent or another compatible agent.
-The installation routes below match the
-[website guide](https://gethealthsync.app/#install-hermes-agent).
+Use this skill with Hermes Agent or another agent that supports Agent Skills,
+command execution and outbound HTTPS.
 
-## Interactive installation
+## Install
 
-With Node.js 18 or newer installed, run:
+With Node.js and npm installed, run:
 
 ```bash
-npx skills add https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/latest/download/apple-health-sync-agent-skill.zip
+npx skills add https://github.com/lukasosterheider/apple-health-for-ai-agents/tree/main/generic-skill/apple-health-sync
 ```
 
-Select Hermes Agent or your compatible agent when prompted, then choose global
-or project scope. The portable scripts need Python 3 and the dependencies in
-[`requirements.txt`](apple-health-sync/requirements.txt).
+Select your agent and installation scope when prompted. On first use, the skill
+downloads the matching Health Sync executable and verifies its checksum. Python
+is not required. See the [skills CLI guide](https://github.com/vercel-labs/skills#usage).
 
-## Manual ZIP installation
-
-Download [apple-health-sync-agent-skill.zip](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/latest/download/apple-health-sync-agent-skill.zip)
-and use your agent's skill import or installation flow. The ZIP contains one
-`apple-health-sync` folder with `SKILL.md` and its runtime resources. For Claude
-Web's upload steps, see [`claude/README.md`](../claude/README.md).
-
-The download link follows the latest stable GitHub release. Each release also
-provides `apple-health-sync-agent-skill.zip.sha256`. For a fixed version, use that
-release's download link instead of `releases/latest/download`.
+For manual installation, download
+[apple-health-sync-agent-skill.zip](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/latest/download/apple-health-sync-agent-skill.zip)
+and use your agent's ZIP import. This bundle includes the executables. Its checksum
+is in the same release. [Claude Web uses this ZIP too](../claude/README.md#claude-web).
 
 ## Start onboarding and Connect your iPhone
 
@@ -35,23 +28,9 @@ Start a fresh agent conversation and send:
 Use Apple Health Sync and start onboarding with a QR code.
 ```
 
-Approve initialization when prompted. Open
-[Health Sync on your iPhone](https://apps.apple.com/app/health-sync-for-openclaw/id6759522298),
-choose QR Code Setup, scan the code, select Apple Health permissions, and complete
-the first sync. Then ask your agent: `What Apple Health data can I access?`
+Open [Health Sync on your iPhone](https://apps.apple.com/app/health-sync-for-openclaw/id6759522298),
+choose **QR Code Setup**, scan the code, grant Apple Health permissions and complete
+your first sync. Then ask your agent: `Fetch my health data and summarize this week.`
 
-## Develop the shared source
-
-[`apple-health-sync/`](apple-health-sync) is the editable source used to build the
-portable ZIP, OpenClaw variant, and native plugin runtimes. From the repository root:
-
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install -r generic-skill/apple-health-sync/requirements.txt
-.venv/bin/python -m unittest discover -s generic-skill/apple-health-sync/scripts -p 'test_*.py' -v
-```
-
-On Windows, use `.venv\Scripts\python.exe`. See
-[`SKILL.md`](apple-health-sync/SKILL.md) for runtime usage and
-[`references/config.md`](apple-health-sync/references/config.md) for local storage.
-Never commit private keys, local configuration, QR onboarding artifacts, or health data.
+Keep the state directory private and persistent, especially in hosted agents.
+[CLI commands](../cli/README.md#commands) · [Configuration](apple-health-sync/references/config.md)

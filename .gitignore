@@ -2,7 +2,10 @@
 __pycache__/
 *.py[cod]
 .venv/
-/codex/apple-health-sync/runtime/
+/build/
+/dist/
+*.egg-info/
+/*/apple-health-sync/runtime/
 # Runtime state and private material must never be committed.
 .apple-health-sync/
 *.pem
@@ -12,3 +15,6 @@ __pycache__/
 *.sqlite3
 *.ndjson
 registration-qr.*
+
+# Public Mozilla CA trust roots embedded by Go.
+!cli/internal/healthsync/resources/cacert.pem
