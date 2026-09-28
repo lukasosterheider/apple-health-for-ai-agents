@@ -18,7 +18,7 @@ is not required. See the [skills CLI guide](https://github.com/vercel-labs/skill
 For manual installation, download
 [apple-health-sync-agent-skill.zip](https://github.com/lukasosterheider/apple-health-for-ai-agents/releases/latest/download/apple-health-sync-agent-skill.zip)
 and use your agent's ZIP import. This bundle includes the executables. Its checksum
-is in the same release. [Claude Web uses this ZIP too](../claude/README.md#claude-web).
+is in the same release.
 
 ## Start onboarding and Connect your iPhone
 

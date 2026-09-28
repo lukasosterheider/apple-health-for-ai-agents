@@ -1,6 +1,6 @@
 # Apple Health for AI Agents
 
-Access Apple Health data from your terminal, Codex, Claude, OpenClaw or another
+Access Apple Health data from your terminal, Codex, Claude Code, OpenClaw or another
 AI agent. Health Sync encrypts data on your iPhone and decrypts it in your CLI or
 agent environment.
 
@@ -14,7 +14,7 @@ and a computer or agent environment with internet access. Choose your installati
 | Terminal or custom integration | [Health Sync CLI](cli/README.md) |
 | OpenClaw | [Install the skill](openclaw/README.md) |
 | Codex | [Install the plugin](codex/README.md) |
-| Claude Code or Claude Web | [Install the plugin or skill](claude/README.md) |
+| Claude Code | [Install the plugin](claude/README.md) |
 | Hermes Agent or another compatible agent | [Install the generic skill](generic-skill/README.md) |
 
 All integrations use the same Go executable. No Python, Go or system SQLite
